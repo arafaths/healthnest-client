@@ -1,3 +1,5 @@
+import CTABanner from '@/components/Home/CTABanner';
+import FAQ from '@/components/Home/FAQ';
 import HeroBanner from '@/components/Home/HeroBanner';
 import MedicalSpecializations from '@/components/Home/MedicalSpecializations';
 import SuccessStories from '@/components/Home/SuccessStories';
@@ -10,7 +12,9 @@ const page = () => {
       <HeroBanner />
       <MedicalSpecializations />
       <SuccessStories />
-      <WhyChooseUs/>
+      <WhyChooseUs />
+      <FAQ />
+      <CTABanner />
     </>
   );
 };
