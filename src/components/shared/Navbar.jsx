@@ -3,7 +3,7 @@ import { FaHeartbeat, FaMoon, FaChevronDown } from 'react-icons/fa';
 
 const Navbar = () => {
   return (
-    <nav className="w-full px-6 pt-4 bg-[#030712] flex justify-center">
+    <nav className="w-full px-6 pt-4 bg-[#030712] flex justify-center sticky z-50 top-0 left-0">
       <div className="w-full max-w-7xl bg-[#0b1329]/60 backdrop-blur-md border border-gray-800 rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
         {/* Left: Logo */}
         <div className="flex items-center gap-2 cursor-pointer">
