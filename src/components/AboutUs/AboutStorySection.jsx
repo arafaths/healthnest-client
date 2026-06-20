@@ -38,7 +38,7 @@ export default function AboutStorySection() {
   };
 
   return (
-    <section className="w-full bg-[#040812] py-16 px-6 md:px-16 lg:px-24 flex items-center justify-center">
+    <section className="w-full bg-[#040812] py-10 px-6 md:px-16 lg:px-24 flex items-center justify-center">
       <motion.div
         variants={containerVariants}
         initial="hidden"
