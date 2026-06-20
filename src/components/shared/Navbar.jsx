@@ -88,9 +88,9 @@ const Navbar = () => {
             Login
           </button>
 
-          <button className="px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#10b981] to-[#059669] rounded-xl hover:opacity-90 shadow-md shadow-[#10b981]/10 transition-all">
+          <Link href={'/sign-up'} className="px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#10b981] to-[#059669] rounded-xl hover:opacity-90 shadow-md shadow-[#10b981]/10 transition-all">
             Register
-          </button>
+          </Link>
 
           <div className="hidden sm:flex items-center gap-2 pl-2 pr-3 py-1 bg-gray-800/30 border border-gray-800 rounded-full cursor-pointer hover:bg-gray-800/50 transition-all">
             <img
