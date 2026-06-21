@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiUser,
   FiMail,
-  FiPhone,
   FiImage,
   FiLock,
   FiEye,
@@ -13,6 +13,7 @@ import {
   FiShield,
   FiUserPlus,
   FiCheck,
+  FiX,
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaHeartbeat } from 'react-icons/fa';
@@ -21,18 +22,30 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Form States
+  // Independent local state for UI matching check only
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Main Form States (Excluding confirmPassword)
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
-    phone: '',
     photoUrl: '',
     gender: '',
     role: '',
     password: '',
-    confirmPassword: '',
     agreeTerms: false,
   });
+
+  // Live Validation States for Password
+  const passwordRules = {
+    hasMinLength: formData.password.length >= 6,
+    hasUppercase: /[A-Z]/.test(formData.password),
+    hasNumber: /[0-9]/.test(formData.password),
+  };
+
+  // UI Match checking using local confirmPassword state
+  const isPasswordMatch = formData.password === confirmPassword;
+  const showMatchError = confirmPassword.length > 0 && !isPasswordMatch;
 
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
@@ -44,7 +57,19 @@ export default function SignUpPage() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
+
+    // Final Validation Check before submit
+    const isAllRulesPassed = Object.values(passwordRules).every(Boolean);
+    if (!isAllRulesPassed) {
+      alert('Please satisfy all password requirements.');
+      return;
+    }
+    if (!isPasswordMatch) {
+      return; // Stop form submission if passwords mismatch
+    }
+
+    // formData will now be clean without confirmPassword field
+    console.log('Form Submitted Successfully:', formData);
   };
 
   return (
@@ -64,8 +89,8 @@ export default function SignUpPage() {
           <div className="flex items-center gap-2 mb-4">
             <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-emerald-400/30 bg-emerald-500/10">
               <span className="text-[#10b981] text-xl">
-                          <FaHeartbeat />
-                        </span>
+                <FaHeartbeat />
+              </span>
             </div>
             <span className="text-white text-2xl font-semibold tracking-wide">
               Health<span className="text-emerald-400">Nest</span>
@@ -97,8 +122,8 @@ export default function SignUpPage() {
               <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter your full name"
                 className="w-full bg-[#0e1726] border border-slate-800 focus:border-emerald-500/50 rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 outline-none transition-all text-sm"
@@ -202,9 +227,6 @@ export default function SignUpPage() {
                   <option value="doctor" className="bg-[#0e1726]">
                     Doctor
                   </option>
-                  <option value="admin" className="bg-[#0e1726]">
-                    Admin
-                  </option>
                 </select>
                 <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">
                   ▼
@@ -255,10 +277,14 @@ export default function SignUpPage() {
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your password"
-                  className="w-full bg-[#0e1726] border border-slate-800 focus:border-emerald-500/50 rounded-xl py-3 pl-11 pr-10 text-white placeholder-slate-500 outline-none transition-all text-sm"
+                  className={`w-full bg-[#0e1726] border rounded-xl py-3 pl-11 pr-10 text-white placeholder-slate-500 outline-none transition-all text-sm ${
+                    showMatchError
+                      ? 'border-red-500 focus:border-red-500/70'
+                      : 'border-slate-800 focus:border-emerald-500/50'
+                  }`}
                   required
                 />
                 <button
@@ -276,25 +302,87 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Password Validation Guidance Indicators */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400">
-              <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">
-                <FiCheck />
+          {/* Real-time Validation Error Messages for Mismatch */}
+          <div className="pl-1">
+            <AnimatePresence>
+              {showMatchError && (
+                <motion.p
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="text-red-500 text-xs font-medium flex items-center gap-1"
+                >
+                  <FiX className="w-3.5 h-3.5 shrink-0" />
+                  Passwords do not match
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Password Validation Guidance Indicators (Dynamic Colors) */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-0.5">
+            {/* Rule 1: Minimum 6 characters */}
+            <div
+              className={`flex items-center gap-1.5 text-xs transition-colors duration-250 ${
+                passwordRules.hasMinLength
+                  ? 'text-emerald-400'
+                  : 'text-slate-500'
+              }`}
+            >
+              <div
+                className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] transition-all ${
+                  passwordRules.hasMinLength
+                    ? 'bg-emerald-500/20 text-emerald-400'
+                    : 'bg-slate-800 text-slate-600'
+                }`}
+              >
+                <FiCheck
+                  className={passwordRules.hasMinLength ? 'stroke-[3]' : ''}
+                />
               </div>
               Minimum 6 characters
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400">
-              <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">
-                <FiCheck />
+
+            {/* Rule 2: At least one uppercase letter */}
+            <div
+              className={`flex items-center gap-1.5 text-xs transition-colors duration-250 ${
+                passwordRules.hasUppercase
+                  ? 'text-emerald-400'
+                  : 'text-slate-500'
+              }`}
+            >
+              <div
+                className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] transition-all ${
+                  passwordRules.hasUppercase
+                    ? 'bg-emerald-500/20 text-emerald-400'
+                    : 'bg-slate-800 text-slate-600'
+                }`}
+              >
+                <FiCheck
+                  className={passwordRules.hasUppercase ? 'stroke-[3]' : ''}
+                />
+              </div>
+              At least one uppercase letter
+            </div>
+
+            {/* Rule 3: At least one number */}
+            <div
+              className={`flex items-center gap-1.5 text-xs transition-colors duration-250 ${
+                passwordRules.hasNumber ? 'text-emerald-400' : 'text-slate-500'
+              }`}
+            >
+              <div
+                className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] transition-all ${
+                  passwordRules.hasNumber
+                    ? 'bg-emerald-500/20 text-emerald-400'
+                    : 'bg-slate-800 text-slate-600'
+                }`}
+              >
+                <FiCheck
+                  className={passwordRules.hasNumber ? 'stroke-[3]' : ''}
+                />
               </div>
               At least one number
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400">
-              <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px]">
-                <FiCheck />
-              </div>
-              At least one special character
             </div>
           </div>
 
@@ -323,7 +411,14 @@ export default function SignUpPage() {
           {/* Action Button: Create Account */}
           <button
             type="submit"
-            className="w-full bg-[#00c885] hover:bg-[#00b074] text-[#050b14] font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 text-sm mt-2"
+            disabled={
+              showMatchError || !Object.values(passwordRules).every(Boolean)
+            }
+            className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg text-sm mt-2 ${
+              showMatchError || !Object.values(passwordRules).every(Boolean)
+                ? 'bg-slate-800 text-slate-500 cursor-not-allowed shadow-none'
+                : 'bg-[#00c885] hover:bg-[#00b074] text-[#050b14] shadow-emerald-500/20'
+            }`}
           >
             <FiUserPlus className="w-4 h-4 stroke-[2.5]" />
             Create Account

@@ -80,15 +80,21 @@ const Navbar = () => {
 
         {/* ================= RIGHT: ACTIONS & CONTROLS ================= */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <button className="hidden xl:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700/80 rounded-xl hover:bg-gray-800/40 transition-all">
+          <Link
+            href={'/dashboard/patient'}
+            className="hidden xl:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700/80 rounded-xl hover:bg-gray-800/40 transition-all"
+          >
             Dashboard
-          </button>
+          </Link>
 
-          <button className="hidden sm:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700/80 rounded-xl hover:bg-gray-800/40 transition-all">
+          <Link href={'login'} className="hidden sm:block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700/80 rounded-xl hover:bg-gray-800/40 transition-all">
             Login
-          </button>
+          </Link>
 
-          <Link href={'/sign-up'} className="px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#10b981] to-[#059669] rounded-xl hover:opacity-90 shadow-md shadow-[#10b981]/10 transition-all">
+          <Link
+            href={'/register'}
+            className="px-4 sm:px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#10b981] to-[#059669] rounded-xl hover:opacity-90 shadow-md shadow-[#10b981]/10 transition-all"
+          >
             Register
           </Link>
 

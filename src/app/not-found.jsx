@@ -8,7 +8,7 @@ import { TbMedicalCross } from 'react-icons/tb';
 
 const NotFound = () => {
   return (
-    <section className="w-full min-h-[85vh] bg-[#020613] text-white py-16 px-6 md:px-16 lg:px-24 flex flex-col items-center justify-center overflow-hidden relative">
+    <section className="w-full min-h-screen bg-[#020613] text-white py-16 px-6 md:px-16 lg:px-24 flex flex-col items-center justify-center overflow-hidden relative">
       {/* Ambient Background Glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] sm:w-[500px] sm:h-[500px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute top-[20%] left-[15%] w-40 h-40 bg-teal-500/5 rounded-full blur-[80px] pointer-events-none"></div>
