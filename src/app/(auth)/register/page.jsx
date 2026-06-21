@@ -17,6 +17,9 @@ import {
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaHeartbeat } from 'react-icons/fa';
+import { authClient } from '@/lib/auth-client';
+import { redirect } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -55,7 +58,7 @@ export default function SignUpPage() {
     }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     // Final Validation Check before submit
@@ -68,8 +71,34 @@ export default function SignUpPage() {
       return; // Stop form submission if passwords mismatch
     }
 
-    // formData will now be clean without confirmPassword field
-    console.log('Form Submitted Successfully:', formData);
+    const { data, error } = await authClient.signUp.email({
+      name: formData.name, // required
+      email: formData.email, // required
+      password: formData.password, // required
+      image: formData.photoUrl,
+      role: formData.role,
+      gender: formData.gender,
+    });
+    if (data) {
+      toast.success('Account created successfully!', {
+        duration: 4000,
+        style: {
+          border: '1px solid #22C55E',
+          padding: '8px',
+          color: '#166534',
+          background: '#F0FDF4',
+          borderRadius: '12px',
+        },
+        iconTheme: {
+          primary: '#22C55E',
+          secondary: '#fff',
+        },
+      });
+      redirect('/')
+    }
+    if (error) {
+      console.log(error)
+    }
   };
 
   return (
