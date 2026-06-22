@@ -18,15 +18,21 @@ import {
 import { FcGoogle } from 'react-icons/fc';
 import { FaHeartbeat } from 'react-icons/fa';
 import { authClient } from '@/lib/auth-client';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Loading state for form submission
+  const [isLoading, setIsLoading] = useState(false);
+
   // Independent local state for UI matching check only
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const router = useRouter();
 
   // Main Form States (Excluding confirmPassword)
   const [formData, setFormData] = useState({
@@ -71,33 +77,46 @@ export default function SignUpPage() {
       return; // Stop form submission if passwords mismatch
     }
 
-    const { data, error } = await authClient.signUp.email({
-      name: formData.name, // required
-      email: formData.email, // required
-      password: formData.password, // required
-      image: formData.photoUrl,
-      role: formData.role,
-      gender: formData.gender,
-    });
-    if (data) {
-      toast.success('Account created successfully!', {
-        duration: 4000,
-        style: {
-          border: '1px solid #22C55E',
-          padding: '8px',
-          color: '#166534',
-          background: '#F0FDF4',
-          borderRadius: '12px',
-        },
-        iconTheme: {
-          primary: '#22C55E',
-          secondary: '#fff',
-        },
+    // Start loading spinner and disable button
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name: formData.name, // required
+        email: formData.email, // required
+        password: formData.password, // required
+        image: formData.photoUrl,
+        role: formData.role,
+        gender: formData.gender,
       });
-      redirect('/')
-    }
-    if (error) {
-      console.log(error)
+
+      if (data) {
+        toast.success('Account created successfully!', {
+          duration: 4000,
+          style: {
+            border: '1px solid #22C55E',
+            padding: '8px',
+            color: '#166534',
+            background: '#F0FDF4',
+            borderRadius: '12px',
+          },
+          iconTheme: {
+            primary: '#22C55E',
+            secondary: '#fff',
+          },
+        });
+        router.push('/');
+      }
+
+      if (error) {
+        console.log(error);
+        toast.error(error.message || 'Something went wrong!');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      // Stop loading and re-enable button if something goes wrong or process completes
+      setIsLoading(false);
     }
   };
 
@@ -441,16 +460,24 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={
-              showMatchError || !Object.values(passwordRules).every(Boolean)
+              isLoading ||
+              showMatchError ||
+              !Object.values(passwordRules).every(Boolean)
             }
             className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg text-sm mt-2 ${
-              showMatchError || !Object.values(passwordRules).every(Boolean)
+              isLoading ||
+              showMatchError ||
+              !Object.values(passwordRules).every(Boolean)
                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed shadow-none'
                 : 'bg-[#00c885] hover:bg-[#00b074] text-[#050b14] shadow-emerald-500/20'
             }`}
           >
-            <FiUserPlus className="w-4 h-4 stroke-[2.5]" />
-            Create Account
+            {isLoading ? (
+              <div className="w-5 h-5 border-2 border-slate-500 border-t-slate-300 rounded-full animate-spin" />
+            ) : (
+              <FiUserPlus className="w-4 h-4 stroke-[2.5]" />
+            )}
+            {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
@@ -475,12 +502,12 @@ export default function SignUpPage() {
         <div className="text-center mt-6">
           <p className="text-slate-400 text-xs">
             Already have an account?{' '}
-            <a
-              href="#"
+            <Link
+              href={'/login'}
               className="text-emerald-400 font-medium hover:underline ml-1"
             >
               Sign In
-            </a>
+            </Link>
           </p>
         </div>
       </div>
