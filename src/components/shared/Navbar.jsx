@@ -167,7 +167,7 @@ const Navbar = () => {
                     className="absolute right-0 top-[125%] w-48 bg-[#091124]/95 border border-gray-800 rounded-xl p-2 shadow-2xl backdrop-blur-md flex flex-col space-y-1 z-50"
                   >
                     <Link
-                      href={`/dashboard/${user?.role}`}
+                      href={`/dashboard/${user?.role}/overview`}
                       onClick={() => setIsProfileOpen(false)}
                       className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-lg transition-all"
                     >
@@ -277,7 +277,7 @@ const Navbar = () => {
 
                     {/* Mobile Dropdown Options */}
                     <Link
-                      href={`/dashboard/${user?.role}`}
+                      href={`/dashboard/${user?.role}/overview`}
                       onClick={() => setIsOpen(false)}
                       className="flex items-center gap-2 px-2 py-2 text-xs font-medium text-gray-400 hover:text-white transition-all"
                     >

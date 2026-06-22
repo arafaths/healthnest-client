@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PatientDash = () => {
+const page = () => {
   return (
     <div>
       Hello Patient
@@ -8,4 +8,4 @@ const PatientDash = () => {
   );
 };
 
-export default PatientDash;
+export default page;
