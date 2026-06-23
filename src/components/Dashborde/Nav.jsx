@@ -7,7 +7,23 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 import { FaHeartbeat, FaMoon, FaSun } from 'react-icons/fa';
-import { Menu, X, LogOut, LayoutDashboard, CalendarDays, CreditCard, Star, User } from 'lucide-react';
+import {
+  Menu,
+  X,
+  LogOut,
+  LayoutDashboard,
+  CalendarDays,
+  CreditCard,
+  Star,
+  User,
+  CalendarRange,
+  Inbox,
+  FileText,
+  ShieldCheck,
+  Users,
+  Activity,
+  History,
+} from 'lucide-react';
 
 import { authClient } from '@/lib/auth-client';
 
@@ -18,8 +34,10 @@ export default function Nav() {
   const { data: session } = authClient.useSession();
 
   const user = session?.user;
+  const role = session?.user?.role;
 
-  const menuItems = [
+  // Patient menu item
+  const patient = [
     {
       name: 'Overview',
       icon: LayoutDashboard,
@@ -46,6 +64,67 @@ export default function Nav() {
       href: '/dashboard/patient/profile',
     },
   ];
+
+  // Doctor menu item
+  const doctor = [
+    {
+      name: 'Dashboard Overview',
+      icon: LayoutDashboard,
+      href: '/dashboard/doctor/overview',
+    },
+    {
+      name: 'Manage Schedules & Days',
+      icon: CalendarRange,
+      href: '/dashboard/doctor/schedules',
+    },
+    {
+      name: 'Appointments Inbox',
+      icon: Inbox,
+      href: '/dashboard/doctor/appointments',
+    },
+    {
+      name: 'Prescriptions Cabin',
+      icon: FileText,
+      href: '/dashboard/doctor/prescriptions',
+    },
+    {
+      name: 'Profile Credentials',
+      icon: User,
+      href: '/dashboard/doctor/profile',
+    },
+  ];
+
+  // Admin menu item
+  const admin = [
+    {
+      name: 'Ecosystem Analytics',
+      icon: Activity,
+      href: '/dashboard/admin/analytics',
+    },
+    {
+      name: 'Manage User Accounts',
+      icon: Users,
+      href: '/dashboard/admin/users',
+    },
+    {
+      name: 'Verify Doctor Licenses',
+      icon: ShieldCheck,
+      href: '/dashboard/admin/verify-doctors',
+    },
+    {
+      name: 'Clinical Appts Registry',
+      icon: History,
+      href: '/dashboard/admin/appointments-registry',
+    },
+    {
+      name: 'Stripe Cash Flows',
+      icon: CreditCard,
+      href: '/dashboard/admin/cash-flows',
+    },
+  ];
+
+  const menuItems =
+    role === 'patient' ? patient : role === 'doctor' ? doctor : admin;
 
   const handleLogout = async () => {
     await authClient.signOut();
