@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }) => {
         <Sidebar />
 
         {/* Main Content */}
-        <main className="flex-1 text-white pl-0 lg:pl-64 overflow-x-hidden">
+        <main className="flex-1 pl-0 lg:pl-64 overflow-x-hidden">
           {children}
         </main>
       </div>
