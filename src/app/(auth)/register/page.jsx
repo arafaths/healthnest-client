@@ -21,6 +21,8 @@ import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { methods } from 'better-auth/react';
+import { json } from 'better-auth';
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -91,6 +93,24 @@ export default function SignUpPage() {
       });
 
       if (data) {
+        if (formData.role === 'doctor') {
+          const res = await fetch('http://localhost:5000/doctors', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              doctorName: formData.name,
+              email: formData.email,
+              profileImage: formData.photoUrl,
+            }),
+          });
+          if (!res.ok) {
+            toast.error('Failed to create doctor profile');
+            return;
+          }
+        }
+
         toast.success('Account created successfully!', {
           duration: 4000,
           style: {
