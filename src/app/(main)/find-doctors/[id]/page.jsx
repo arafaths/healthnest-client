@@ -84,6 +84,7 @@ export default function AppointmentBooking() {
       const appointmentData = {
         doctorId: doctor._id,
         doctorName: doctor.doctorName,
+        doctorImage: doctor.profileImage,
         patientName: user?.name,
         patientEmail: user?.email,
 

@@ -1,73 +1,50 @@
 'use client';
 
+import { authClient } from '@/lib/auth-client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function UpcomingAppointments() {
-  // ডাইনামিক অ্যাপয়েন্টমেন্ট ডেটা
-  const appointments = [
-    {
-      id: 1,
-      doctor: {
-        name: 'Dr. Rahul Verma',
-        specialty: 'Cardiologist',
-        image:
-          'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=150&h=150&q=80', // ডামি ইমেজ সোর্স
-      },
-      date: 'May 16, 2025',
-      time: '10:30 AM',
-      status: 'Confirmed',
-      statusStyles:
-        'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.05)]',
-    },
-    {
-      id: 2,
-      doctor: {
-        name: 'Dr. Priya Sharma',
-        specialty: 'Neurologist',
-        image:
-          'https://images.unsplash.com/photo-1594824813573-246434e33963?auto=format&fit=crop&w=150&h=150&q=80',
-      },
-      date: 'May 18, 2025',
-      time: '02:00 PM',
-      status: 'Pending',
-      statusStyles:
-        'text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_12px_rgba(245,158,11,0.05)]',
-    },
-    {
-      id: 3,
-      doctor: {
-        name: 'Dr. Arjun Mehta',
-        specialty: 'Orthopedic',
-        image:
-          'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=150&h=150&q=80',
-      },
-      date: 'May 20, 2025',
-      time: '11:00 AM',
-      status: 'Cancelled',
-      statusStyles:
-        'text-rose-500 bg-rose-500/10 border-rose-500/20 shadow-[0_0_12px_rgba(244,63,94,0.05)]',
-    },
-  ];
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    fetch(`http://localhost:5000/patient/upcoming-appointments/${user.email}`)
+      .then(res => res.json())
+      .then(data => setUpcomingAppointments(data));
+  }, [user]);
+
+  const appointments = upcomingAppointments || [];
+
+  const statusStyles = {
+    confirmed:
+      'bg-emerald-950/40 border border-emerald-500/20 text-emerald-400',
+    pending: 'bg-amber-950/40 border border-amber-500/20 text-amber-500',
+    cancelled: 'bg-rose-950/40 border border-rose-500/20 text-rose-500',
+  };
 
   return (
-    <div className="bg-[#030712] p-6">
-      <div className="w-full bg-[#050b14] border border-slate-900/80 rounded-2xl p-6 shadow-xl">
+    <div className="bg-[#030712] p-4 sm:p-6">
+      <div className="w-full bg-[#050b14] border border-slate-900/80 rounded-2xl p-4 sm:p-6 shadow-xl">
         {/* Header Row */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold tracking-tight text-white">
+        <div className="flex items-center justify-between mb-6 gap-2">
+          <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white truncate">
             Upcoming Appointments
           </h2>
           <Link href="/dashboard/patient/appointments">
-            <button className="px-4 py-2 rounded-xl border border-slate-800 text-sm font-medium text-emerald-400 hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all duration-200">
+            <button className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-slate-800 text-xs sm:text-sm font-medium text-emerald-400 hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all duration-200 whitespace-nowrap">
               View All
             </button>
           </Link>
         </div>
 
         {/* Table Container for Responsiveness */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full text-left border-collapse min-w-[600px] md:min-w-full">
             {/* Table Head */}
             <thead>
               <tr className="border-b border-slate-900/60">
@@ -90,15 +67,15 @@ export default function UpcomingAppointments() {
             <tbody className="divide-y divide-slate-900/40">
               {appointments.map(appt => (
                 <tr
-                  key={appt.id}
+                  key={appt._id}
                   className="group hover:bg-slate-800/10 transition-colors duration-150"
                 >
                   {/* Doctor Info */}
                   <td className="py-4 flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-800 bg-slate-900 shrink-0 relative">
                       <Image
-                        src={appt.doctor.image}
-                        alt={appt.doctor.name}
+                        src={appt.doctorImage}
+                        alt={appt.doctorName}
                         fill
                         sizes="48px"
                         className="object-cover"
@@ -106,30 +83,27 @@ export default function UpcomingAppointments() {
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="text-[15px] font-bold text-white tracking-wide truncate">
-                        {appt.doctor.name}
-                      </span>
-                      <span className="text-xs text-slate-500 mt-0.5 truncate">
-                        {appt.doctor.specialty}
+                        {appt.doctorName}
                       </span>
                     </div>
                   </td>
 
                   {/* Date */}
-                  <td className="py-4 text-[14px] font-medium text-slate-300">
-                    {appt.date}
+                  <td className="py-4 text-[14px] font-medium text-slate-300 whitespace-nowrap">
+                    {appt.appointmentDate}
                   </td>
 
                   {/* Time */}
-                  <td className="py-4 text-[14px] font-medium text-slate-300">
-                    {appt.time}
+                  <td className="py-4 text-[14px] font-medium text-slate-300 whitespace-nowrap">
+                    {appt.timeSlot}
                   </td>
 
                   {/* Status Badges */}
                   <td className="py-4 text-right">
                     <span
-                      className={`inline-flex items-center justify-center px-4 py-1.5 rounded-xl text-xs font-semibold border tracking-wide select-none min-w-[100px] ${appt.statusStyles}`}
+                      className={`inline-block px-5 py-1.5 rounded-full text-xs font-semibold tracking-wide text-center min-w-[100px] capitalize transition-all duration-200 whitespace-nowrap ${statusStyles[appt.appointmentStatus?.toLowerCase() || 'pending'] || statusStyles.pending}`}
                     >
-                      {appt.status}
+                      {appt.appointmentStatus}
                     </span>
                   </td>
                 </tr>

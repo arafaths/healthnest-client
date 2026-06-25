@@ -1,5 +1,6 @@
 'use client';
 
+import { authClient } from '@/lib/auth-client';
 import {
   Calendar,
   BookOpen,
@@ -7,50 +8,54 @@ import {
   Heart,
   ArrowUpRight,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function StatsGrid() {
-  // ডাইনামিক কার্ড ডেটা অ্যারে
+  const [dashboardData, setDashboardData] = useState(null);
+  const { data: session, } = authClient.useSession();
+  const user = session?.user;
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    fetch(`http://localhost:5000/patient/overview/${user.email}`)
+      .then(res => res.json())
+      .then(data => setDashboardData(data));
+  }, [user]);
+
   const stats = [
     {
       title: 'Upcoming Appointments',
-      value: '3',
-      percentage: '12%',
+      value: dashboardData?.upcomingAppointments || 0,
       icon: Calendar,
-      // গ্রিন গ্লো ও বর্ডার
       iconStyles:
         'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]',
     },
     {
       title: 'Appointment History',
-      value: '12',
-      percentage: '8%',
+      value: dashboardData?.appointmentHistory || 0,
       icon: BookOpen,
-      // সায়ান/ব্লু-গ্রিন গ্লো ও বর্ডার
       iconStyles:
         'text-cyan-400 bg-cyan-500/10 border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.1)]',
     },
     {
       title: 'Total Payments',
-      value: '$1,250',
-      percentage: '15%',
+      value: `$${dashboardData?.totalPayments || 0}`,
       icon: CreditCard,
-      // ব্রাইট এমারেল্ড গ্লো ও বর্ডার
       iconStyles:
         'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]',
     },
-    {
-      title: 'Favorite Doctors',
-      value: '5',
-      percentage: '5%',
-      icon: Heart,
-      // সফট রেড/রোজ গ্লো ও বর্ডার
-      iconStyles:
-        'text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)]',
-    },
+    // {
+    //   title: 'Favorite Doctors',
+    //   value: '5',
+    //   icon: Heart,
+    //   iconStyles:
+    //     'text-rose-400 bg-rose-500/10 border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)]',
+    // },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 p-6 bg-[#030712] min-h-28">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 p-6 bg-[#030712] min-h-28">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
 
@@ -77,17 +82,6 @@ export default function StatsGrid() {
                   {stat.title}
                 </span>
               </div>
-            </div>
-
-            {/* Bottom Row: Percentage & Context */}
-            <div className="flex items-center gap-2 mt-5 pt-3 border-t border-slate-900/40">
-              <div className="flex items-center text-emerald-400 text-xs font-semibold bg-emerald-500/5 px-2 py-0.5 rounded-md border border-emerald-500/10">
-                <ArrowUpRight size={14} className="mr-0.5" />
-                <span>{stat.percentage}</span>
-              </div>
-              <span className="text-xs text-slate-500 font-medium">
-                vs last month
-              </span>
             </div>
           </div>
         );
