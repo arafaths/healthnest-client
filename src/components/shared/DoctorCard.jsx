@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Heart, Star } from 'lucide-react';
+import Link from 'next/link';
+import { Heart, Star, CheckCircle2, Award } from 'lucide-react';
 
 const DoctorCard = ({ doctor }) => {
-  // ফেভরিট টগল স্টেট হ্যান্ডলার
   const [favorites, setFavorites] = useState([]);
-  const toggleFavorite = id => {
+  const [imageError, setImageError] = useState(false);
+
+  const toggleFavorite = (id, e) => {
+    e.preventDefault(); 
     setFavorites(prev =>
       prev.includes(id) ? prev.filter(favId => favId !== id) : [...prev, id],
     );
   };
 
-  // সিঙ্গেল কার্ডের এন্ট্রান্স ভ্যারিয়েন্ট
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     show: {
@@ -21,67 +23,115 @@ const DoctorCard = ({ doctor }) => {
       transition: { type: 'spring', stiffness: 80, damping: 15 },
     },
   };
+
+  const getInitial = name => (name ? name.trim().charAt(0).toUpperCase() : 'D');
+
   return (
     <motion.div
       variants={cardVariants}
       whileHover={{ y: -6, scale: 1.01 }}
-      className="bg-[#050b14] border border-slate-900/90 rounded-2xl p-4 flex flex-col justify-between overflow-hidden relative shadow-lg hover:border-slate-800 hover:shadow-[0_12px_30px_rgba(0,0,0,0.5)] group transition-colors duration-300"
+      className="bg-[#050b14] border border-slate-900/90 rounded-2xl p-4 flex flex-col justify-between overflow-hidden relative shadow-lg hover:border-slate-800/80 hover:shadow-[0_12px_30px_rgba(0,0,0,0.6)] group transition-all duration-300"
     >
-      {/* Top Section: Photo Wrapper */}
-      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-slate-900 bg-slate-950 relative">
-        <Image
-          src={doctor.profileImage}
-          alt={doctor.doctorName}
-          fill
-          sizes="(max-w-640px) 100vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+      {/* ================= PHOTO WRAPPER SECTION ================= */}
+      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-slate-900 bg-slate-950 relative select-none">
+        {doctor.profileImage && !imageError ? (
+          <Image
+            src={doctor.profileImage}
+            alt={doctor.doctorName}
+            fill
+            sizes="(max-w-640px) 100vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-3xl font-extrabold text-emerald-400/80 bg-[#0a1220]">
+            {getInitial(doctor.doctorName)}
+          </div>
+        )}
 
-        {/* Floating Heart/Favorite Action Button */}
+        {/* Available Indicator Badge */}
+        <span className="absolute top-3 left-3 bg-emerald-950/60 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+          Available
+        </span>
+
+        {/* Floating Favorite Action Button */}
         <button
-          onClick={() => toggleFavorite(doctor.id)}
-          className="absolute top-3 right-3 p-2 rounded-full bg-slate-950/40 backdrop-blur-md border border-white/5 text-slate-300 hover:text-rose-500 hover:bg-slate-950/60 transition-all duration-200 active:scale-90"
+          onClick={e => toggleFavorite(doctor.id, e)}
+          className="absolute top-3 right-3 p-2 rounded-full bg-slate-950/40 backdrop-blur-md border border-white/5 text-slate-300 hover:text-rose-500 hover:bg-slate-950/60 transition-all duration-200 active:scale-90 z-10"
         >
           <Heart
-            size={18}
+            size={16}
             fill={favorites.includes(doctor.id) ? '#f43f5e' : 'transparent'}
-            className={favorites.includes(doctor.id) ? 'text-rose-500' : ''}
+            className={
+              favorites.includes(doctor.id)
+                ? 'text-rose-500'
+                : 'transition-colors'
+            }
           />
         </button>
+
+        {/* Image Floating Verification Stamp */}
+        {doctor.status === 'verified' && (
+          <div className="absolute bottom-2 left-2 bg-slate-950/70 backdrop-blur-md border border-slate-800 rounded-full pl-1.5 pr-2.5 py-0.5 flex items-center gap-1 shadow-md">
+            <CheckCircle2
+              size={11}
+              fill="currentColor"
+              className="text-emerald-500"
+              stroke="#050b14"
+            />
+            <span className="text-[10px] text-white font-bold tracking-wide">
+              Verified
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Middle Section: Info Body */}
-      <div className="flex flex-col mt-4">
-        <h3 className="text-[17px] font-bold text-white tracking-wide truncate group-hover:text-emerald-400 transition-colors duration-200">
+      {/* ================= INFO BODY SECTION ================= */}
+      <div className="flex flex-col mt-4 flex-1">
+        <h3 className="text-[16px] font-bold text-white tracking-wide truncate group-hover:text-emerald-400 transition-colors duration-200">
           {doctor.doctorName}
         </h3>
-        <p className="text-xs font-medium text-slate-500 mt-0.5 tracking-wide">
+        <p className="text-xs font-semibold text-emerald-500/90 mt-0.5 tracking-wide">
           {doctor.specialty}
         </p>
 
-        {/* Experience and Rating Data Line */}
-        <div className="flex items-center justify-between mt-3 text-xs font-semibold text-slate-400">
-          <span>{doctor.experience}</span>
-          <div className="flex items-center gap-1 bg-amber-500/5 border border-amber-500/10 px-2 py-0.5 rounded-md text-amber-400">
-            <Star size={13} fill="currentColor" />
-            {/* <span>{doctor.rating}</span> */}
+        {/* Better Experience & Rating Badge Layout */}
+        <div className="flex items-center justify-between mt-3.5 gap-2">
+          {/* Enhanced Experience Badge */}
+          <div className="inline-flex items-center gap-1 bg-[#0a1220] border border-slate-800 px-2.5 py-1 rounded-lg text-slate-400 text-[11px] font-bold shadow-inner">
+            <Award size={12} className="text-slate-500" />
+            <span>{doctor.experience || '10+ Years Exp'}</span>
+          </div>
+
+          {/* Rating Badge */}
+          <div className="flex items-center gap-1 bg-amber-500/5 border border-amber-500/10 px-2.5 py-1 rounded-lg text-amber-400 text-[11px] font-bold">
+            <Star size={12} fill="currentColor" />
+            <span>{doctor.rating || '4.8'}</span>
           </div>
         </div>
 
-        {/* Fee Component */}
-        <div className="text-lg font-bold text-white mt-4 tracking-wide">
-          {doctor.fee}
+        {/* Consultation Fee Section */}
+        <div className="mt-4 pt-3 border-t border-slate-900/60 flex items-baseline justify-between">
+          <span className="text-[11px] text-slate-500 font-medium">
+            Consultation Fee
+          </span>
+          <span className="text-base font-extrabold text-white tracking-wide">
+            {typeof doctor.fee === 'number' ? `$${doctor.fee}` : doctor.fee}
+          </span>
         </div>
       </div>
 
-      {/* Bottom Section: Primary Action Button with pulse flow */}
+      {/* ================= LINKED ACTION BUTTON ================= */}
       <div className="mt-4">
-        <button className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold tracking-wide shadow-[0_4px_12px_rgba(16,185,129,0.15)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.25)] transition-all duration-200 transform active:scale-[0.98]">
+        <Link
+          href={`/find-doctors/${doctor._id}`}
+          className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold tracking-wider uppercase inline-flex items-center justify-center shadow-[0_4px_12px_rgba(16,185,129,0.15)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.25)] transition-all duration-200 active:scale-[0.98]"
+        >
           Book Appointment
-        </button>
+        </Link>
       </div>
     </motion.div>
   );
-};;;
+};
 
 export default DoctorCard;
