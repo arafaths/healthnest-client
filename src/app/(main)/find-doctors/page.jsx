@@ -39,7 +39,7 @@ export default function DoctorSearchDashboard() {
         }
 
         const res = await fetch(
-          `http://localhost:5000/doctors?${params.toString()}`,
+          `${process.env.NEXT_PUBLIC_API_URL}doctors?${params.toString()}`,
         );
 
         if (!res.ok) {

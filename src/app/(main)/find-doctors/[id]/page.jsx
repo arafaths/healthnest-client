@@ -32,7 +32,9 @@ export default function AppointmentBooking() {
   useEffect(() => {
     const getDoctor = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/doctor/${id}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}doctor/${id}`,
+        );
         const data = await res.json();
 
         setDoctorData(data);
@@ -104,13 +106,16 @@ export default function AppointmentBooking() {
         transactionId,
       };
 
-      const res = await fetch('http://localhost:5000/appointments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}appointments`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(appointmentData),
         },
-        body: JSON.stringify(appointmentData),
-      });
+      );
 
       const data = await res.json();
 

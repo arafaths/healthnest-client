@@ -38,7 +38,7 @@ export default function ReviewsPage() {
     if (!user?.email) return;
 
     const res = await fetch(
-      `http://localhost:5000/reviews/patient/${user?.email}`,
+      `${process.env.NEXT_PUBLIC_API_URL}reviews/patient/${user?.email}`,
     );
 
     const data = await res.json();
@@ -47,7 +47,7 @@ export default function ReviewsPage() {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:5000/reviews/patient/${user?.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}reviews/patient/${user?.email}`)
       .then(res => res.json())
       .then(data => setReviews(data));
   }, [user]);
@@ -55,7 +55,9 @@ export default function ReviewsPage() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/patient/upcoming-appointments/${user?.email}`)
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user?.email}`,
+    )
       .then(res => res.json())
       .then(data => setDoctorsList(data));
   }, [user]);
@@ -81,7 +83,7 @@ export default function ReviewsPage() {
     if (isEditing) {
       try {
         const res = await fetch(
-          `http://localhost:5000/reviews/${editingReviewId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}reviews/${editingReviewId}`,
           {
             method: 'PATCH',
             headers: {
@@ -133,7 +135,7 @@ export default function ReviewsPage() {
     console.log(review)
 
     try {
-      const res = await fetch('http://localhost:5000/reviews', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,9 +166,12 @@ export default function ReviewsPage() {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/reviews/${id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}reviews/${id}`,
+        {
+          method: 'DELETE',
+        },
+      );
 
       const data = await res.json();
 

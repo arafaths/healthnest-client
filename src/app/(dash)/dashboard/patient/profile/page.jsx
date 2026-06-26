@@ -98,13 +98,16 @@ export default function ProfilePage() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:5000/users/${user.email}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}users/${user.email}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
         },
-        body: JSON.stringify(formData),
-      });
+      );
 
       const data = await res.json();
 

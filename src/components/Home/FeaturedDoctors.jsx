@@ -14,7 +14,7 @@ export default function FeaturedDoctors() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await fetch('http://localhost:5000/doctors');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}doctors`);
 
         if (!res.ok) {
           throw new Error('Failed to fetch doctors');

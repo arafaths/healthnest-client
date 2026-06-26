@@ -26,14 +26,13 @@ export default function DoctorDashboard() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/doctor/overview/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}doctor/overview/${user.email}`)
       .then(res => res.json())
       .then(data => {
         setDashboardData(data);
         setReviews(data.recentReviews);
       });
   }, [user]);
-
 
   // Fallback stats matching Screenshot 2026-06-25 153210.jpg
   const stats = [

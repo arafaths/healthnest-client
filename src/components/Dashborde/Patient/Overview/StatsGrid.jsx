@@ -18,7 +18,7 @@ export default function StatsGrid() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/patient/overview/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}patient/overview/${user.email}`)
       .then(res => res.json())
       .then(data => setDashboardData(data));
   }, [user]);

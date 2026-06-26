@@ -47,7 +47,7 @@ export default function AppointmentRequests() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/doctor/appointments/${user.email}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}doctor/appointments/${user.email}`)
       .then(res => res.json())
       .then(data => setRequests(data));
   }, [user]);
@@ -61,9 +61,12 @@ export default function AppointmentRequests() {
 
   // Accept
   const handleAccept = async id => {
-    const res = await fetch(`http://localhost:5000/appointments/accept/${id}`, {
-      method: 'PATCH',
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}appointments/accept/${id}`,
+      {
+        method: 'PATCH',
+      },
+    );
 
     const data = await res.json();
 
@@ -78,9 +81,12 @@ export default function AppointmentRequests() {
 
   // Reject
   const handleReject = async id => {
-    const res = await fetch(`http://localhost:5000/appointments/reject/${id}`, {
-      method: 'PATCH',
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}appointments/reject/${id}`,
+      {
+        method: 'PATCH',
+      },
+    );
 
     const data = await res.json();
 
@@ -96,7 +102,7 @@ export default function AppointmentRequests() {
   // Complet
   const handleComplete = async id => {
     const res = await fetch(
-      `http://localhost:5000/appointments/complete/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}appointments/complete/${id}`,
       {
         method: 'PATCH',
       },

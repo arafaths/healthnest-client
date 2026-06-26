@@ -63,7 +63,7 @@ export default function DynamicDoctorProfile() {
     const fetchProfileData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/doctors/${user?.email}`,
+          `${process.env.NEXT_PUBLIC_API_URL}doctors/${user?.email}`,
         );
 
         if (!response.ok) {
@@ -146,13 +146,16 @@ export default function DynamicDoctorProfile() {
     };
 
     try {
-      const res = await fetch(`http://localhost:5000/doctors/${doctorId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}doctors/${doctorId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedData),
         },
-        body: JSON.stringify(updatedData),
-      });
+      );
 
       if (res.ok) {
         const result = await res.json();

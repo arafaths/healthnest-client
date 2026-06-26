@@ -13,7 +13,9 @@ export default function UpcomingAppointments() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`http://localhost:5000/patient/upcoming-appointments/${user.email}`)
+    fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
+    )
       .then(res => res.json())
       .then(data => setUpcomingAppointments(data));
   }, [user]);

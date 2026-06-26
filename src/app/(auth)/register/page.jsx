@@ -94,7 +94,7 @@ export default function SignUpPage() {
 
       if (data) {
         if (formData.role === 'doctor') {
-          const res = await fetch('http://localhost:5000/doctors', {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}doctors`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
