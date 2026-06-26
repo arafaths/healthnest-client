@@ -65,7 +65,7 @@ export default function UpcomingAppointments() {
 
             {/* Table Body */}
             <tbody className="divide-y divide-slate-900/40">
-              {appointments.map(appt => (
+              {appointments.slice(0, 4).map(appt => (
                 <tr
                   key={appt._id}
                   className="group hover:bg-slate-800/10 transition-colors duration-150"

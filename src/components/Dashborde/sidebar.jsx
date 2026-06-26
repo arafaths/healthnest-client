@@ -117,11 +117,11 @@ export default function Sidebar() {
   const user = session?.user;
 
   const menuItems =
-    role === 'patient'
-      ? patient
+    role === 'admin'
+      ? admin
       : role === 'doctor'
         ? doctor
-        : admin;
+        : patient;
 
   const handleLogout = async () => {
     await authClient.signOut();

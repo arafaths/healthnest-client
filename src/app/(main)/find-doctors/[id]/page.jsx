@@ -20,6 +20,7 @@ import { useParams } from 'next/navigation';
 import PaymentModal from '@/components/DoctorDetails/PaymentModal';
 import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 export default function AppointmentBooking() {
   const { id } = useParams();
@@ -76,7 +77,8 @@ export default function AppointmentBooking() {
 
   // User
   const { data: session, } = authClient.useSession();
-  const user = session?.user;console.log(user)
+  const user = session?.user; console.log(user)
+  const transactionId = `TXN-${Date.now()}`;
 
   // Payment submit
   const onPaySubmit = async () => {
@@ -87,6 +89,7 @@ export default function AppointmentBooking() {
         doctorImage: doctor.profileImage,
         patientName: user?.name,
         patientEmail: user?.email,
+        specialty: doctor.specialty,
 
         appointmentDate: bookingDetails.appointmentDate,
         timeSlot: bookingDetails.timeSlot,
@@ -96,6 +99,7 @@ export default function AppointmentBooking() {
         fee: doctor.fee,
         paymentStatus: 'paid',
         appointmentStatus: 'pending',
+        transactionId,
       };
 
       const res = await fetch('http://localhost:5000/appointments', {
@@ -122,7 +126,7 @@ export default function AppointmentBooking() {
   const getInitial = name => (name ? name.trim().charAt(0).toUpperCase() : 'D');
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <ProjectLoader text={'Doctor Details Loading...' } />
   }
 
   if (!doctorData) {
