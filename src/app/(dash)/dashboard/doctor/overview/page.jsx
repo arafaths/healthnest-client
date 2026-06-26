@@ -1,8 +1,9 @@
 'jsx';
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { formatDistanceToNow } from 'date-fns';
 import {
   Users,
   Calendar,
@@ -12,50 +13,58 @@ import {
   TrendingUp,
   MessageSquareX,
 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 export default function DoctorDashboard() {
-  const reviews = [];
-  const dashboardData = '';
+  const [dashboardData, setDashboardData] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [imageError, setImageError] = useState(false);
+
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    fetch(`http://localhost:5000/doctor/overview/${user.email}`)
+      .then(res => res.json())
+      .then(data => {
+        setDashboardData(data);
+        setReviews(data.recentReviews);
+      });
+  }, [user]);
+
+
   // Fallback stats matching Screenshot 2026-06-25 153210.jpg
-  const stats = dashboardData || [
+  const stats = [
     {
       id: 1,
       label: 'Total Patients',
-      value: '1,248',
-      change: '+12%',
-      sub: 'from last month',
+      value: dashboardData?.totalPatients ?? 0,
       icon: Users,
     },
     {
       id: 2,
       label: "Today's Appointments",
-      value: '18',
-      change: '+8%',
-      sub: 'from yesterday',
+      value: dashboardData?.todayAppointments ?? 0,
       icon: Calendar,
     },
     {
       id: 3,
       label: 'Total Reviews',
-      value: reviews.length > 0 ? reviews.length : '0',
-      change: '+15%',
-      sub: 'from last month',
+      value: dashboardData?.totalReviews ?? 0,
       icon: Star,
     },
     {
       id: 4,
       label: 'Total Prescriptions',
-      value: '320',
-      change: '+10%',
-      sub: 'from last month',
+      value: dashboardData?.totalPrescriptions ?? 0,
       icon: Pill,
     },
     {
       id: 5,
       label: 'Total Earnings',
-      value: '$12,450',
-      change: '+18%',
-      sub: 'from last month',
+      value: `$${dashboardData?.totalEarnings ?? 0}`,
       icon: DollarSign,
     },
   ];
@@ -90,13 +99,6 @@ export default function DoctorDashboard() {
                   <p className="text-xs text-slate-500 mt-1 font-medium">
                     {stat.label}
                   </p>
-                </div>
-
-                {/* Trend indicator */}
-                <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-bold mt-4 pt-3 border-t border-slate-900/40">
-                  <TrendingUp size={12} />
-                  <span>{stat.change}</span>
-                  <span className="text-slate-600 font-normal">{stat.sub}</span>
                 </div>
               </div>
             );
@@ -141,19 +143,28 @@ export default function DoctorDashboard() {
             <div className="flex flex-col divide-y divide-slate-900/60">
               {reviews.map((review, index) => (
                 <div
-                  key={review.id || index}
+                  key={review._id || index}
                   className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:bg-[#0a1220]/20 rounded-xl transition-all duration-200 px-2 -mx-2"
                 >
                   {/* Left Info Group */}
                   <div className="flex items-start gap-4 sm:max-w-[30%] w-full">
                     <div className="relative w-11 h-11 rounded-full overflow-hidden bg-slate-950 border border-slate-800 shrink-0">
-                      <Image
-                        src={review.patientImage || '/fallback-avatar.png'}
-                        alt={review.patientName}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
+                      {review.patientImage && !imageError ? (
+                        <Image
+                          src={review.patientImage || '/fallback-avatar.png'}
+                          alt={review.patientName}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                          onError={() => setImageError(true)}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-500/20 to-slate-900 text-emerald-400 font-bold text-2xl uppercase select-none tracking-wider">
+                          {review.patientName
+                            ? review.patientName.charAt(0)
+                            : 'U'}
+                        </div>
+                      )}
                     </div>
                     <div className="flex flex-col gap-1">
                       <h4 className="text-xs font-bold text-white tracking-wide truncate group-hover:text-emerald-400 transition-colors">
@@ -184,7 +195,9 @@ export default function DoctorDashboard() {
 
                   {/* Right Dynamic Time Stamp */}
                   <div className="text-[11px] text-slate-500 font-semibold tracking-wide whitespace-nowrap text-right sm:min-w-[80px]">
-                    {review.timeAgo}
+                    {formatDistanceToNow(new Date(review.createdAt), {
+                      addSuffix: true,
+                    })}
                   </div>
                 </div>
               ))}

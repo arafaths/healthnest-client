@@ -64,7 +64,7 @@ export default function Sidebar() {
       href: '/dashboard/doctor/schedules',
     },
     {
-      name: 'Appointments Inbox',
+      name: 'Appointments Requests',
       icon: Inbox,
       href: '/dashboard/doctor/appointments',
     },

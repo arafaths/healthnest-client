@@ -360,7 +360,7 @@ export default function DynamicDoctorProfile() {
               {/* Consultation Fee */}
               <div className="bg-[#0a1220] border border-slate-800/60 rounded-xl p-3 flex flex-col gap-1">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
-                  Consultation Fee (₹)
+                  Consultation Fee ($)
                 </label>
                 <input
                   type="number"

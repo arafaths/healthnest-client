@@ -357,7 +357,7 @@ export default function ReviewsPage() {
                       <option value="">Select Doctor</option>
                       {doctorsList.map((doc, idx) => (
                         <option
-                          key={doc.doctorId}
+                          key={`${doc.doctorId}-${idx}`}
                           value={doc.doctorName}
                           className="bg-[#050b14]"
                         >

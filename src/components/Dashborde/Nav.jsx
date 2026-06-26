@@ -78,7 +78,7 @@ export default function Nav() {
       href: '/dashboard/doctor/schedules',
     },
     {
-      name: 'Appointments Inbox',
+      name: 'Appointments Requests',
       icon: Inbox,
       href: '/dashboard/doctor/appointments',
     },
@@ -124,7 +124,7 @@ export default function Nav() {
   ];
 
   const menuItems =
-    role === 'patient' ? patient : role === 'doctor' ? doctor : admin;
+    role === 'admin' ? admin : role === 'doctor' ? doctor : patient;
 
   const handleLogout = async () => {
     await authClient.signOut();

@@ -87,7 +87,9 @@ export default function AppointmentBooking() {
         doctorId: doctor._id,
         doctorName: doctor.doctorName,
         doctorImage: doctor.profileImage,
+        doctorEmail: doctor.email,
         patientName: user?.name,
+        patientImage: user?.image,
         patientEmail: user?.email,
         specialty: doctor.specialty,
 
