@@ -58,11 +58,11 @@ export default function Sidebar() {
       icon: LayoutDashboard,
       href: '/dashboard/doctor/overview',
     },
-    {
-      name: 'Manage Schedules & Days',
-      icon: CalendarRange,
-      href: '/dashboard/doctor/schedules',
-    },
+    // {
+    //   name: 'Manage Schedules & Days',
+    //   icon: CalendarRange,
+    //   href: '/dashboard/doctor/schedules',
+    // },
     {
       name: 'Appointments Requests',
       icon: Inbox,
@@ -128,7 +128,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="fixed top-0 left-0 z-40 w-64 h-screen bg-[#050b14] border-r border-slate-900 hidden lg:flex flex-col justify-between py-6 overflow-hidden select-none">
+    <aside className="fixed top-0 left-0 z-40 w-64 h-screen bg-[#050b14]/99 border-r border-slate-900 hidden lg:flex flex-col justify-between py-6 overflow-hidden select-none">
       {/* Background Subtle Glow Effect */}
       <div className="absolute -top-20 -left-20 w-48 h-48 bg-emerald-500/5 rounded-full blur-[80px] pointer-events-none" />
 

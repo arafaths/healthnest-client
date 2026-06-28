@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import NoAppointment from '@/components/DoctorDetails/Appointment Requests/NoAppointment';
 import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 // ================= 👤 SUB-COMPONENT: AVATAR WITH FALLBACK INITIAL =================
 const PatientAvatar = ({ src, name }) => {
@@ -119,13 +120,12 @@ export default function AppointmentRequests() {
     }
   };
 
+  const Router = useRouter();
   // Create Prescription
   const handleCreatePrescription = request => {
     console.log(request);
 
-    // modal open
-    // অথবা
-    // router.push(`/doctor/prescription/${request._id}`)
+    Router.push(`/dashboard/doctor/prescriptions`);
   };
 
   return (

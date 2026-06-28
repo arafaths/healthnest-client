@@ -14,8 +14,11 @@ import {
   MessageSquareX,
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import toast from 'react-hot-toast';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 export default function DoctorDashboard() {
+  const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [imageError, setImageError] = useState(false);
@@ -26,12 +29,31 @@ export default function DoctorDashboard() {
   useEffect(() => {
     if (!user?.email) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}doctor/overview/${user.email}`)
-      .then(res => res.json())
-      .then(data => {
+    const loadDashboard = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}doctor/overview/${user.email}`,
+        );
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch dashboard');
+        }
+
+        const data = await res.json();
+
         setDashboardData(data);
         setReviews(data.recentReviews);
-      });
+      } catch (error) {
+        console.error(error);
+        toast.error('Server Error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
   }, [user]);
 
   // Fallback stats matching Screenshot 2026-06-25 153210.jpg
@@ -67,6 +89,10 @@ export default function DoctorDashboard() {
       icon: DollarSign,
     },
   ];
+
+  if (loading) {
+    return <ProjectLoader/>
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-screen p-4 md:p-8 text-slate-300 font-sans antialiased">

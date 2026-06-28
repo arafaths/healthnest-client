@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+import ProjectLoader from '@/components/shared/ProjectLoader';
+
 
 export default function DynamicDoctorProfile() {
   // 1. Profile Information State
@@ -170,11 +172,7 @@ export default function DynamicDoctorProfile() {
   };
 
   if (loading) {
-    return (
-      <div className="w-full min-h-screen bg-[#030712] flex items-center justify-center text-emerald-400 font-bold text-sm tracking-wide">
-        Loading Profile Data...
-      </div>
-    );
+    return <ProjectLoader />;
   }
 
   return (

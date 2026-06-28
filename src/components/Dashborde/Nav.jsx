@@ -72,11 +72,11 @@ export default function Nav() {
       icon: LayoutDashboard,
       href: '/dashboard/doctor/overview',
     },
-    {
-      name: 'Manage Schedules & Days',
-      icon: CalendarRange,
-      href: '/dashboard/doctor/schedules',
-    },
+    // {
+    //   name: 'Manage Schedules & Days',
+    //   icon: CalendarRange,
+    //   href: '/dashboard/doctor/schedules',
+    // },
     {
       name: 'Appointments Requests',
       icon: Inbox,
@@ -133,7 +133,7 @@ export default function Nav() {
   return (
     <>
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 bg-[#050b14]/80 border-b border-slate-900 backdrop-blur-xl transition-colors duration-300">
+      <nav className="sticky top-0 z-50 bg-[#050b14] border-b border-slate-900 backdrop-blur-xl transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 lg:px-6 py-3.5 flex items-center justify-between">
           {/* Left Section */}
           <div className="flex items-center gap-3">

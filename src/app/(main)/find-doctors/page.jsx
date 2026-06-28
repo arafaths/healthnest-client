@@ -1,12 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  Search,
-  RotateCcw,
-  UserX,
-  ChevronDown,
-} from 'lucide-react';
+import { Search, RotateCcw, UserX, ChevronDown } from 'lucide-react';
 import DoctorCard from '@/components/shared/DoctorCard';
 import ProjectLoader from '@/components/shared/ProjectLoader';
 
@@ -81,8 +76,8 @@ export default function DoctorSearchDashboard() {
   };
 
   if (loading) {
-      return <ProjectLoader text={'Doctors Loading...' } />
-    }
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="w-full bg-[#030712] p-6 min-h-screen text-slate-300 font-sans select-none">

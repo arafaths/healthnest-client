@@ -133,7 +133,7 @@ export default function AppointmentBooking() {
   const getInitial = name => (name ? name.trim().charAt(0).toUpperCase() : 'D');
 
   if (loading) {
-    return <ProjectLoader text={'Doctor Details Loading...' } />
+    return <ProjectLoader />
   }
 
   if (!doctorData) {
