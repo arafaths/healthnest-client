@@ -47,7 +47,7 @@ export default function ClinicalAppointmentsRegistry() {
 
   const getStatusStyle = status => {
     switch ((status || '').toLowerCase()) {
-      case 'confirmed':
+      case 'accepted':
         return 'text-emerald-400 bg-emerald-950/30 border border-emerald-500/20';
       case 'completed':
         return 'text-blue-400 bg-blue-950/30 border border-blue-500/20';

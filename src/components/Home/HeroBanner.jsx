@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { FaRegCalendarAlt, FaSearch } from 'react-icons/fa';
 import { HiOutlineBadgeCheck } from 'react-icons/hi';
 import { MdOutlineSecurity, MdSupportAgent } from 'react-icons/md';
+import Link from 'next/link';
 
 const HeroBanner = () => {
   const Doctor = '/Doctor2.png';
@@ -83,15 +84,21 @@ const HeroBanner = () => {
             variants={fadeInUpVariants}
             className="flex flex-wrap items-center gap-4 pt-2"
           >
-            <button className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-[#10b981] to-[#059669] hover:opacity-95 transition-all text-sm shadow-lg shadow-[#10b981]/20">
+            <Link
+              href={'/find-doctors'}
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-[#10b981] to-[#059669] hover:opacity-95 transition-all text-sm shadow-lg shadow-[#10b981]/20"
+            >
               <FaRegCalendarAlt className="text-base" />
               Book Appointment &rarr;
-            </button>
+            </Link>
 
-            <button className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-medium text-gray-400 hover:text-white border border-gray-800 bg-[#091424]/40 hover:bg-[#091424]/80 transition-all text-sm">
+            <Link
+              href={'/find-doctors'}
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-medium text-gray-400 hover:text-white border border-gray-800 bg-[#091424]/40 hover:bg-[#091424]/80 transition-all text-sm"
+            >
               <FaSearch className="text-gray-500 text-xs" />
               Find Doctors
-            </button>
+            </Link>
           </motion.div>
 
           {/* Small Checkmarks Features */}

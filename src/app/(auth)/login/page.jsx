@@ -136,9 +136,9 @@ export default function LoginPage() {
 
           {/* Password */}
           <div className="space-y-1.5">
-              <label className="text-slate-300 text-xs font-medium pl-1">
-                Password
-              </label>
+            <label className="text-slate-300 text-xs font-medium pl-1">
+              Password
+            </label>
             <div className="relative">
               <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
               <input
@@ -164,7 +164,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-
           {/* Action Button: Sign In */}
           <button
             type="submit"
@@ -174,6 +173,21 @@ export default function LoginPage() {
             Sign In
           </button>
         </form>
+
+        {/* Demo Admin Account */}
+        <div className="mt-4 p-3 rounded-xl border border-slate-800 bg-[#0e1726] text-xs">
+          <p className="text-emerald-400 font-semibold mb-2">
+            Demo Admin Account
+          </p>
+
+          <p className="text-slate-300">
+            <span className="text-slate-500">Email:</span> arafat@hossen.com
+          </p>
+
+          <p className="text-slate-300 mt-1">
+            <span className="text-slate-500">Password:</span> Pa$$w0rd!
+          </p>
+        </div>
 
         {/* OR Divider Line */}
         <div className="relative flex items-center justify-center my-6">
