@@ -1,36 +1,219 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🏥 HealthNest
 
-## Getting Started
+HealthNest is a full-stack Hospital Appointment & Healthcare Management System that streamlines the healthcare experience for Patients, Doctors, and Administrators. It provides secure authentication, appointment booking, payment processing, prescription management, reviews, and role-based dashboards.
 
-First, run the development server:
+---
+
+## 🌐 Live Links
+
+- **Client:** https://healthnest-care.vercel.app
+
+---
+
+## 🚀 Features
+
+### 👤 Authentication
+- Secure Email & Password Authentication
+- Google Sign In
+- Role-Based Access Control (Patient, Doctor, Admin)
+- Protected Routes
+
+### 🩺 Patient Features
+- Book Doctor Appointments
+- View Upcoming Appointments
+- Appointment History
+- Stripe Payment
+- Payment History
+- Download Prescriptions
+- Submit Doctor Reviews
+- Manage Profile
+
+### 👨‍⚕️ Doctor Features
+- View Appointment Requests
+- Approve/Reject Appointments
+- Create Prescriptions
+- Manage Patients
+- Earnings Overview
+- Profile Management
+
+### 🛡️ Admin Features
+- Dashboard Analytics
+- Manage Users
+- Verify Doctor Licenses
+- Manage Doctors
+- Clinical Appointments Registry
+- Stripe Cash Flow Monitoring
+- Platform Statistics
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- Next.js 15
+- React.js
+- Tailwind CSS
+- Framer Motion
+- Lucide React
+- React Hot Toast
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- JWT Authentication
+- Better Auth
+
+### Payment
+
+- Stripe Payment Gateway
+
+### Deployment
+
+- Vercel
+- MongoDB Atlas
+
+---
+
+## 📂 Folder Structure
+
+```
+HealthNest
+│
+├── client
+│   ├── app
+│   ├── components
+│   ├── hooks
+│   ├── lib
+│   └── public
+│
+├── server
+│   ├── routes
+│   ├── middleware
+│   ├── controllers
+│   ├── utils
+│   └── index.js
+```
+
+---
+
+## ⚙️ Environment Variables
+
+### Client (.env.local)
+
+```env
+NEXT_PUBLIC_API_URL=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+```
+
+### Server (.env)
+
+```env
+PORT=
+MONGODB_URI=
+
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=
+
+STRIPE_SECRET_KEY=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+---
+
+## 📦 Installation
+
+Clone the repositories
+
+```bash
+git clone https://github.com/arafaths/healthnest-client
+
+git clone https://github.com/arafaths/healthnest-server
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Run the client
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the server
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔐 User Roles
 
-To learn more about Next.js, take a look at the following resources:
+### Patient
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Book appointments
+- Make payments
+- View prescriptions
+- Submit reviews
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Doctor
 
-## Deploy on Vercel
+- Manage appointments
+- Create prescriptions
+- View patients
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Admin
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Manage users
+- Verify doctors
+- View analytics
+- Monitor Stripe transactions
+
+---
+
+## 💳 Payment
+
+HealthNest uses Stripe Payment Gateway for secure online consultation payments.
+
+---
+
+## 📸 Screenshots
+
+- Home Page
+- Doctor Details
+- Appointment Booking
+- Patient Dashboard
+- Doctor Dashboard
+- Admin Dashboard
+
+(Add screenshots here)
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first.
+
+---
+
+## 📄 License
+
+This project is created for educational purposes.
+
+---
+
+## 👨‍💻 Developer
+
+**MD. Arafat**
+
+GitHub: https://github.com/arafaths/healthnest-client
+LinkedIn: https://github.com/arafaths/healthnest-server

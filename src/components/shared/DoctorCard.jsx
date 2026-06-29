@@ -55,7 +55,7 @@ const DoctorCard = ({ doctor }) => {
         </span>
 
         {/* Floating Favorite Action Button */}
-        <button
+        {/* <button
           onClick={e => toggleFavorite(doctor.id, e)}
           className="absolute top-3 right-3 p-2 rounded-full bg-slate-950/40 backdrop-blur-md border border-white/5 text-slate-300 hover:text-rose-500 hover:bg-slate-950/60 transition-all duration-200 active:scale-90 z-10"
         >
@@ -68,7 +68,7 @@ const DoctorCard = ({ doctor }) => {
                 : 'transition-colors'
             }
           />
-        </button>
+        </button> */}
 
         {/* Image Floating Verification Stamp */}
         {doctor.status === 'verified' && (
