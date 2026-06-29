@@ -90,6 +90,7 @@ export default function SignUpPage() {
         image: formData.photoUrl,
         role: formData.role,
         gender: formData.gender,
+        status: 'Active',
       });
 
       if (data) {

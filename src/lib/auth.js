@@ -20,6 +20,10 @@ export const auth = betterAuth({
         type: 'string',
         input: true,
       },
+      status: {
+        type: 'string',
+        input: true,
+      },
     },
   },
   experimental: { joins: true },
