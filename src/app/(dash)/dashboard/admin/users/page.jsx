@@ -3,19 +3,13 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Eye,
   Octagon,
   Trash2,
-  X,
   Calendar,
   User,
-  Mail,
-  Phone,
   Shield,
   Users,
-  Clock,
   HeartPulse,
 } from 'lucide-react';
 import NoUsersFound from '@/components/Dashborde/Admin/NoUsersFound';
@@ -52,7 +46,6 @@ const UserAvatar = ({ src, name, sizeClassName = 'w-9 h-9' }) => {
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -309,144 +302,6 @@ export default function UserManagement() {
           </div>
         )}
       </div>
-
-      {/* ================= 🟩 INTERACTIVE USER DETAILS MODAL ================= */}
-      <AnimatePresence>
-        {selectedUser && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop Blur Layer */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedUser(null)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
-            />
-
-            {/* Modal Box */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-sm bg-[#050b14] border border-slate-900 rounded-2xl p-6 shadow-2xl z-10 text-slate-300 text-xs"
-            >
-              {/* Close Button X */}
-              <button
-                onClick={() => setSelectedUser(null)}
-                className="absolute top-5 right-5 text-slate-500 hover:text-white transition-colors"
-              >
-                <X size={16} />
-              </button>
-
-              <h2 className="text-base font-bold text-white tracking-wide mb-5">
-                User Details
-              </h2>
-
-              <div className="flex flex-col items-center gap-5">
-                {/* 1. Centered Big Profile Picture with fallback initial */}
-                <UserAvatar
-                  src={selectedUser.image}
-                  name={selectedUser.name}
-                  sizeClassName="w-20 h-20 border-2 border-slate-800"
-                />
-
-                {/* 2. Structured Information Grid matching Screenshot */}
-                <div className="w-full flex flex-col gap-3 border-t border-slate-900/60 pt-4 font-medium">
-                  {/* Full Name */}
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-900/30">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <User size={13} />
-                      <span>Full Name</span>
-                    </div>
-                    <span className="text-white font-bold">
-                      {selectedUser.name}
-                    </span>
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-900/30">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Mail size={13} />
-                      <span>Email</span>
-                    </div>
-                    <span className="text-slate-300 max-w-[180px] truncate">
-                      {selectedUser.email}
-                    </span>
-                  </div>
-
-                  {/* Phone Number */}
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-900/30">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Phone size={13} />
-                      <span>Phone Number</span>
-                    </div>
-                    <span className="text-slate-300">
-                      {selectedUser.phone || '+1 (555) 123-4567'}
-                    </span>
-                  </div>
-
-                  {/* Role Badge inside Detail info */}
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-900/30">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Shield size={13} />
-                      <span>Role</span>
-                    </div>
-                    <span
-                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wide ${roleStyles[selectedUser.role?.toLowerCase()] || roleStyles.patient}`}
-                    >
-                      {selectedUser.role}
-                    </span>
-                  </div>
-
-                  {/* Gender */}
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-900/30">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Users size={13} />
-                      <span>Gender</span>
-                    </div>
-                    <span className="text-slate-300">
-                      {selectedUser.gender || 'Not Specified'}
-                    </span>
-                  </div>
-
-                  {/* Account Status */}
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-900/30">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Clock size={13} />
-                      <span>Account Status</span>
-                    </div>
-                    <div
-                      className={`flex items-center gap-1.5 font-bold ${statusStyles[selectedUser.status?.toLowerCase()] || statusStyles.active}`}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                      <span>{selectedUser.status}</span>
-                    </div>
-                  </div>
-
-                  {/* Joined Date */}
-                  <div className="flex items-center justify-between py-1.5">
-                    <div className="flex items-center gap-2 text-slate-500">
-                      <Calendar size={13} />
-                      <span>Joined Date</span>
-                    </div>
-                    <span className="text-slate-300">
-                      {selectedUser.joinedDate}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Close Button Trigger */}
-                <button
-                  onClick={() => setSelectedUser(null)}
-                  className="w-full mt-2 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-md text-center transition-all active:scale-[0.98]"
-                >
-                  Close
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
