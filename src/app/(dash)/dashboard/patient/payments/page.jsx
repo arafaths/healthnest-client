@@ -7,20 +7,40 @@ import { Calendar, Eye, CheckCircle2, XCircle, CreditCard } from 'lucide-react';
 import NoPaymentFound from '@/components/Dashborde/Patient/Payments History/NoPaymentFound';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 export default function PaymentHistoryTable({ onViewDetails }) {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
   useEffect(() => {
-    if (!user?.email) return;
+    const fetchUpcomingAppointments = async () => {
+      if (!user?.email) {
+        setLoading(false);
+        return;
+      }
 
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
-    )
-      .then(res => res.json())
-      .then(data => setUpcomingAppointments(data));
+      try {
+        setLoading(true);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
+        );
+
+        const data = await res.json();
+
+        setUpcomingAppointments(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Failed to fetch appointments:', error);
+        setUpcomingAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingAppointments();
   }, [user]);
 
   const payments = upcomingAppointments || [];
@@ -30,6 +50,10 @@ export default function PaymentHistoryTable({ onViewDetails }) {
     refunded: 'bg-rose-950/40 border border-rose-500/20 text-rose-500',
     failed: 'bg-amber-950/40 border border-amber-500/20 text-amber-500',
   };
+
+  if (loading) {
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-screen p-4 md:p-6 text-slate-300 font-sans antialiased">

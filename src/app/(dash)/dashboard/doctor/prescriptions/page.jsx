@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import NoPrescriptions from '@/components/DoctorDetails/prescriptions/NoPrescriptions';
 import { authClient } from '@/lib/auth-client';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 // ================= 👤 SUB-COMPONENT: PATIENT AVATAR FALLBACK =================
 const PatientAvatar = ({ src, name }) => {
@@ -50,6 +51,7 @@ export default function PrescriptionManagement() {
   const [diagnosis, setDiagnosis] = useState('');
   const [medications, setMedications] = useState('');
   const [notes, setNotes] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -76,10 +78,24 @@ export default function PrescriptionManagement() {
   };
 
   useEffect(() => {
-    if (!user?.email) return;
+    const loadData = async () => {
+      if (!user?.email) {
+        setLoading(false);
+        return;
+      }
 
-    loadPrescriptions();
-    loadPatients();
+      try {
+        setLoading(true);
+
+        await Promise.all([loadPrescriptions(), loadPatients()]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, [user?.email]);
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -164,6 +180,10 @@ export default function PrescriptionManagement() {
 
     setIsModalOpen(true);
   };
+
+  if (loading) {
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-[90vh] p-4 md:p-6 text-slate-300 font-sans antialiased">

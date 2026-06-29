@@ -1,5 +1,6 @@
 'use client';
 
+import ProjectLoader from '@/components/shared/ProjectLoader';
 import { authClient } from '@/lib/auth-client';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,18 +8,36 @@ import { useEffect, useState } from 'react';
 
 export default function UpcomingAppointments() {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
   useEffect(() => {
-    if (!user?.email) return;
+    if (!user?.email) {
+      return;
+    }
 
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
-    )
-      .then(res => res.json())
-      .then(data => setUpcomingAppointments(data));
-  }, [user]);
+    const fetchUpcomingAppointments = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
+        );
+
+        const data = await res.json();
+
+        setUpcomingAppointments(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+        setUpcomingAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingAppointments();
+  }, [user?.email]);
 
   const appointments = upcomingAppointments || [];
 
@@ -28,6 +47,10 @@ export default function UpcomingAppointments() {
     pending: 'bg-amber-950/40 border border-amber-500/20 text-amber-500',
     cancelled: 'bg-rose-950/40 border border-rose-500/20 text-rose-500',
   };
+
+  if (loading) {
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="bg-[#030712] p-4 sm:p-6">

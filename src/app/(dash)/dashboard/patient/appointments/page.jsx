@@ -7,21 +7,40 @@ import { Calendar, Clock, Eye, Edit2, Trash2 } from 'lucide-react';
 import NoAppointmentsFound from '@/components/Dashborde/Patient/Appointments/NoAppointmentsFound';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 export default function AppointmentsTable() {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
   useEffect(() => {
-    if (!user?.email) return;
+    if (!user?.email) {
+      return;
+    }
 
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
-    )
-      .then(res => res.json())
-      .then(data => setUpcomingAppointments(data));
-  }, [user]);
+    const fetchUpcomingAppointments = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}patient/upcoming-appointments/${user.email}`,
+        );
+
+        const data = await res.json();
+
+        setUpcomingAppointments(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+        setUpcomingAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingAppointments();
+  }, [user?.email]);
 
   const appointments = upcomingAppointments || [];
 
@@ -32,6 +51,10 @@ export default function AppointmentsTable() {
     completed: 'bg-blue-950/40 border border-blue-500/20 text-blue-400',
     cancelled: 'bg-rose-950/40 border border-rose-500/20 text-rose-500',
   };
+
+  if (loading) {
+    return <ProjectLoader/>
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-screen p-4 md:p-6 text-slate-300 font-sans antialiased">

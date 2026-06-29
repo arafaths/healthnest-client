@@ -14,6 +14,7 @@ import {
 import NoAppointment from '@/components/DoctorDetails/Appointment Requests/NoAppointment';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 // ================= 👤 SUB-COMPONENT: AVATAR WITH FALLBACK INITIAL =================
 const PatientAvatar = ({ src, name }) => {
@@ -44,15 +45,36 @@ export default function AppointmentRequests() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?.email) return;
+    const fetchRequests = async () => {
+      if (!user?.email) {
+        setLoading(false);
+        return;
+      }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}doctor/appointments/${user.email}`)
-      .then(res => res.json())
-      .then(data => setRequests(data));
+      try {
+        setLoading(true);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}doctor/appointments/${user.email}`,
+        );
+
+        const data = await res.json();
+
+        setRequests(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+        setRequests([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRequests();
   }, [user]);
-  // স্ট্যাটাস ব্যাজের কন্ডিশনাল স্টাইল ডিকশনারি (ইমেজের কালার স্কিম অনুযায়ী)
+
   const statusStyles = {
     pending: 'bg-amber-950/30 border border-amber-500/20 text-amber-500',
     accepted: 'bg-emerald-950/30 border border-emerald-500/20 text-emerald-400',
@@ -127,6 +149,10 @@ export default function AppointmentRequests() {
 
     Router.push(`/dashboard/doctor/prescriptions`);
   };
+
+  if (loading) {
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-screen p-4 md:p-6 text-slate-300 font-sans antialiased">

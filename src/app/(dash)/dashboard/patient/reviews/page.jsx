@@ -16,10 +16,12 @@ import {
 import NOReviews from '@/components/Dashborde/Patient/reviews/NOReviews';
 import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Modal Form States
   const [selectedDoctor, setSelectedDoctor] = useState('');
@@ -47,9 +49,31 @@ export default function ReviewsPage() {
   };
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}reviews/patient/${user?.email}`)
-      .then(res => res.json())
-      .then(data => setReviews(data));
+    const fetchReviewsData = async () => {
+      if (!user?.email) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}reviews/patient/${user.email}`,
+        );
+
+        const data = await res.json();
+
+        setReviews(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.log(error);
+        setReviews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviewsData();
   }, [user]);
 
   useEffect(() => {
@@ -132,7 +156,7 @@ export default function ReviewsPage() {
       comment: reviewMessage,
     };
 
-    console.log(review)
+    console.log(review);
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}reviews`, {
@@ -197,6 +221,10 @@ export default function ReviewsPage() {
 
     setIsModalOpen(true);
   };
+
+  if (loading) {
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-screen p-4 md:p-8 text-slate-300 font-sans antialiased relative">

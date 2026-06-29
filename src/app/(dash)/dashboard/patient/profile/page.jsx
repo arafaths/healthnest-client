@@ -6,21 +6,18 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail,
-  Phone,
   User,
-  Calendar,
-  MapPin,
   ShieldAlert,
   CheckCircle,
   Edit3,
   X,
   Check,
   Image as ImageIcon,
-  Camera,
   ChevronDown,
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+import ProjectLoader from '@/components/shared/ProjectLoader';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({
@@ -46,27 +43,40 @@ export default function ProfilePage() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const { data: session, isPending, error } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const user = session?.user;
 
   useEffect(() => {
-    if (user) {
-      const userData = {
-        name: user.name || '',
-        email: user.email || '',
-        image: user.image || '',
-        phone: user.phone || '',
-        gender: user.gender || '',
-        dobRaw: user.dobRaw || '',
-        address: user.address || '',
-        role: user.role || '',
-      };
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
 
-      setProfile(userData);
-      setFormData(userData);
-      setImageError(false);
-    }
+        if (user) {
+          const userData = {
+            name: user.name || '',
+            email: user.email || '',
+            image: user.image || '',
+            phone: user.phone || '',
+            gender: user.gender || '',
+            dobRaw: user.dobRaw || '',
+            address: user.address || '',
+            role: user.role || '',
+          };
+
+          setProfile(userData);
+          setFormData(userData);
+          setImageError(false);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
   }, [user]);
 
   const currentImage = isModalOpen ? formData.image : profile.image;
@@ -128,6 +138,10 @@ export default function ProfilePage() {
       toast.error('Something went wrong');
     }
   };
+
+  if (loading) {
+    return <ProjectLoader />;
+  }
 
   return (
     <div className="w-full bg-[#030712] min-h-screen p-4 md:p-12 flex items-center justify-center text-slate-300 font-sans antialiased">
